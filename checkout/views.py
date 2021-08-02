@@ -173,21 +173,21 @@ def checkout_success(request, order_number):
         'order': order,
     }
     
-    # def _send_confirmation_email(self, order):
-    #     """Sends the user a confirmation email."""
-    # cust_email = order.email
+    def _send_confirmation_email(self, order):
+        """Sends the user a confirmation email."""
+    cust_email = order.email
     
-    # subject = render_to_string(
-    #     'checkout/confirmation_emails/confirmation_email_subject.txt',
-    #     {'order' : order})
-    # body = render_to_string(
-    #     'checkout/confirmation_emails/confirmation_email_body.html',
-    #     {'order' : order, 'contact_email' : settings.DEFAULT_FROM_EMAIL})
-    # send_mail(
-    #     subject,
-    #     body,
-    #     settings.DEFAULT_FROM_EMAIL,
-    #     [cust_email],
-    # )
+    subject = render_to_string(
+        'checkout/confirmation_emails/confirmation_email_subject.txt',
+        {'order' : order})
+    body = render_to_string(
+        'checkout/confirmation_emails/confirmation_email_body.html',
+        {'order' : order, 'contact_email' : settings.DEFAULT_FROM_EMAIL})
+    send_mail(
+        subject,
+        body,
+        settings.DEFAULT_FROM_EMAIL,
+        [cust_email],
+    )
 
     return render(request, template, context)
