@@ -1,0 +1,45 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block inner_content %}
+{% for y in global_styles  %}
+<div class="{% if y.do_not_display %}
+do-not-display {% else %} overlay {% endif %}" style="background-color: {{ y.base_background_color }} !important;">
+</div>
+<hr>
+<h2 class="{% if y.do_not_display %}
+do-not-display {% else %} logo-font mb-4 mt-5 {% endif %}" style="color: {{ y.base_font_color }} !important;">
+  {% trans "Sign Up" %}
+</h2>
+<hr>
+
+<p class="{% if y.do_not_display %}
+do-not-display {% else %} p-0 {% endif %}" style="color: {{ y.base_font_color }} !important;">{% blocktrans %}Already
+  have an account? Then please <a style="color: #333; font-weight: 600;" href="{{ login_url }}">sign
+    in</a>.{% endblocktrans %}
+</p>
+{% endfor global_styles %}
+
+<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+  {% csrf_token %}
+  {{ form|crispy }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  {% for y in global_styles  %}
+  <a class="{% if y.do_not_display %}
+  do-not-display {% else %} btn basic-btn-style rounded-0 {% endif %}"
+    style="background-color: {{ y.primary_button_base_color }}; color: {{ y.primary_button_text_color }}"
+    href="{% url 'account_login' %}">Back to Login
+  </a>
+  <button type="submit" class="{% if y.do_not_display %}
+  do-not-display {% else %} signin-btn {% endif %}"
+    style="background-color: {{ y.secondary_button_base_color }}; color: {{ y.secondary_button_text_color }}">{% trans "Sign Up" %}
+  </button>
+</form>
+{% endfor global_styles %}
+
+{% endblock %}

@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block page_header %}
+<div class="container header-container">
+    <div class="row">
+        <div class="col"></div>
+    </div>
+</div>
+{% endblock page_header %}
+
+
+
+{% block content %}
+{% for y in global_styles  %}
+<div class="{% if y.do_not_display %}
+do-not-display {% else %} overlay {% endif %}" style="background-color: {{ y.base_background_color }} !important;">
+</div>
+{% endfor global_styles %}
+
+{% for x in products_page_customisation  %}
+{% for y in global_styles  %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col text-center mt-3">
+            <h2 class="{% if y.do_not_display %}
+                do-not-display {% else %} logo-font mt-5 mb-5 {% endif %}"
+                style="color: {{ y.base_font_color }} !important;">Products
+            </h2>
+            {% for c in current_categories  %}
+            <a class="category-badge text-decoration-none mr-2" href=" {% url 'products' %}?category={{c.name}}">
+                {% for x in products_page_customisation %}
+                <span class="{% if x.do_not_display %}
+                    do-not-display {% else %} p-2 mt-2 badge rounded-0 {% endif %}"
+                    style="border: 1px solid {{ x.category_tag_border_color }}; color: {{ x.category_tag_text_color }}">
+                    {{c.friendly_name}}
+                </span>
+                {% endfor %}
+            </a>
+
+            {% endfor %}
+            <hr class="w-50 mb-1">
+        </div>
+    </div>
+    <div class="row">
+        <div class="product-container offset-1 col-10">
+            <div class="row mt-1 mb-2">
+                <div class="col-12 col-md-6 my-auto order-md-last d-flex justify-content-center justify-content-md-end">
+                    <div class="sort-select-wrapper w-50">
+                        <select id="sort-selector"
+                            class="custom-select custom-select-sm rounded-0 border border-{% if current_sorting != 'None_None' %}info{% else %}black{% endif %}">
+                            <option value="reset" {% if current_sorting == 'None_None' %}selected{% endif %}>Sort
+                                by...
+                            </option>
+                            <option value="price_asc" {% if current_sorting == 'price_asc' %}selected{% endif %}>
+                                Price
+                                (low to high)</option>
+                            <option value="price_desc" {% if current_sorting == 'price_desc' %}selected{% endif %}>
+                                Price
+                                (high to low)</option>
+                            <option value="rating_asc" {% if current_sorting == 'rating_asc' %}selected{% endif %}>
+                                Rating (low to high)</option>
+                            <option value="rating_desc" {% if current_sorting == 'rating_desc' %}selected{% endif %}>
+                                Rating (high to low)</option>
+                            <option value="name_asc" {% if current_sorting == 'name_asc' %}selected{% endif %}>Name
+                                (A-Z)</option>
+                            <option value="name_desc" {% if current_sorting == 'name_desc' %}selected{% endif %}>
+                                Name
+                                (Z-A)</option>
+                            <option value="category_asc" {% if current_sorting == 'category_asc' %}selected{% endif %}>
+                                Category (A-Z)</option>
+                            <option value="category_desc"
+                                {% if current_sorting == 'category_desc' %}selected{% endif %}>Category (Z-A)
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 order-md-first">
+
+                    {% for y in global_styles %}
+                    <p class="{% if y.do_not_display %}
+                        do-not-display {% else %} mt-3 text-center text-md-left {% endif %}"
+                        style="color: {{ y.base_font_color }};">
+                        {% if search_term or current_categories or current_sorting != 'None_None' %}
+                        <span class="small"><a href="{% url 'products' %}">Products Home</a> | </span>
+                        {% endif %}
+                        {{ products|length }} Products{% if search_term %} found for
+                        <strong>"{{ search_term }}"</strong>{% endif %}
+                    </p>
+                    {% endfor global_styles %}
+
+                </div>
+            </div>
+            <div class="row">
+                {% for product in products  %}
+                <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3">
+
+                    {% for x in products_page_customisation %}
+                    <div class="{% if x.do_not_display %}
+                        do-not-display {% else %} card h-100 {{ x.add_card_border }} {% endif %}"
+                        style="border: 1px solid {{ x.border_color }}; background-color: {{ x.product_card_background_color }} !important">
+                        {% if product.image %}
+                        <a href="{% url 'product_detail' product.id %}">
+                            <img class="card-img-top img-fluid" src="{{ product.image.url }}" alt="{{ product.name }}">
+                        </a>
+                        {% else %}
+                        <a href="{% url 'product_detail' product.id %}">
+                            <img class="card-img-top img-fluid" src="{{ MEDIA_URL }}noimage.png"
+                                alt="{{ product.name }}">
+                        </a>
+                        {% endif %}
+
+                        {% for x in products_page_customisation %}
+                        <div class="card-body pb-0">
+                            <p class="{% if x.do_not_display %}
+                                do-not-display {% else %} mb-0 {% endif %}"
+                                style="color: {{ x.product_card_font_color }};">{{ product.name }}</p>
+                        </div>
+                        {% endfor %}
+
+
+                        <div class="{% if x.do_not_display %}
+                            do-not-display {% else %} card-footer bg-white pt-0 border-0 text-left {% endif %}"
+                            style="background-color: {{ x.product_card_background_color }} !important;">
+                            <div class="row">
+                                <div class="col">
+                                    <p class="lead mb-0 text-left font-weight-bold"
+                                        style="font-weight: 300 !important; color: {{ x.product_card_font_color }}">
+                                        £<span>{{ product.price }}
+                                        </span>
+                                    </p>
+                                    {% if product.category %}
+                                    <p class="small mt-1 mb-0">
+                                        <a class="text-muted"
+                                            style="color: {{ x.product_card_font_color }}B3 !important;"
+                                            href="{% url 'products' %}?category={{ product.category.name }}">
+                                            <i class="fas fa-tag mr-1"
+                                                style="color: {{ x.product_card_icon_color }} !important;"></i>{{ product.category.friendly_name }}
+                                        </a>
+                                    </p>
+                                    {% endif %}
+                                    {% if product.rating %}
+                                    <small class="text-muted"
+                                        style="color: {{ x.product_card_font_color }}B3 !important;"><i
+                                            class="fas fa-star mr-1"
+                                            style="color: {{ x.product_card_icon_color }};"></i>{{ product.rating }}
+                                        /
+                                        5</small>
+                                    {% else %}
+                                    <small class="text-muted">No Rating</small>
+                                    {% endif %}
+                                    {% if request.user.is_superuser %}
+                                    <small class="ml-3">
+                                        <a href="{% url 'edit_product' product.id %}">Edit</a> |
+                                        <a class="text-danger" href="{% url 'delete_product' product.id %}">Delete</a>
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+
+                {% if forloop.counter|divisibleby:1 %}
+                <div class="col-12 d-sm-none mb-5">
+                    <hr>
+                </div>
+                {% endif %}
+                {% if forloop.counter|divisibleby:2 %}
+                <div class="col-12 d-none d-sm-block d-md-block d-lg-none mb-5 mb-5">
+                    <hr>
+                </div>
+                {% endif %}
+                {% if forloop.counter|divisibleby:3 %}
+                <div class="col-12 d-none d-lg-block d-xl-none mb-5">
+                    <hr>
+                </div>
+                {% endif %}
+                {% if forloop.counter|divisibleby:4 %}
+                <div class="col-12 d-none d-xl-block mb-5">
+                    <hr>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endfor products_page_customisation %}
+{% endfor global_styles %}
+
+<div class="btt-button shadow-sm rounded-0 border border-black">
+    <a class="btt-link d-flex h-100">
+        <i class="fas fa-arrow-up text-black mx-auto my-auto"></i>
+    </a>
+</div>
+{% endblock content %}
+{% block postloadjs %}
+{{ block.super }}
+
+<script type="text/javascript">
+    $('#sort-selector').change(function () {
+        var selector = $(this);
+        var currentUrl = new URL(window.location);
+
+        var selectedVal = selector.val();
+        if (selectedVal != "reset") {
+            var sort = selectedVal.split("_")[0];
+            var direction = selectedVal.split("_")[1];
+
+            currentUrl.searchParams.set("sort", sort);
+            currentUrl.searchParams.set("direction", direction);
+
+            window.location.replace(currentUrl);
+        } else {
+            currentUrl.searchParams.delete("sort");
+            currentUrl.searchParams.delete("direction");
+
+            window.location.replace(currentUrl);
+
+        }
+    })
+
+    $('.btt-link').click(function (e) {
+        window.scrollTo(0, 0)
+    })
+</script>
+{% endblock postloadjs %}

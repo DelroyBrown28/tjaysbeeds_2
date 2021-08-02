@@ -1,0 +1,38 @@
+[{
+    'item_id': '82',
+    'quantity': {
+        'items_by_size': {
+            'xl': 1,
+            'xs': 1
+        }
+    },
+    'product': < Product: Cozy Winter Warmer > ,
+    'size': 'xl'
+}, {
+    'item_id': '82',
+    'quantity': {
+        'items_by_size': {
+            'xl': 1,
+            'xs': 1
+        }
+    },
+    'product': < Product: Cozy Winter Warmer > ,
+    'size': 'xs'
+}, {
+    'item_id': '13',
+    'quantity': {
+        'items_by_size': {
+            'xl': 1
+        }
+    },
+    'product': < Product: Champion Jersey Tee > ,
+    'size': 'xl'
+}, {
+    'item_id': '18',
+    'quantity': 1,
+    'product': < Product: Marvel Comics Avengers Hulk Pillow Buddy >
+}, {
+    'item_id': '19',
+    'quantity': 1,
+    'product': < Product: Marvel Spiderman Pillow Buddy >
+}]

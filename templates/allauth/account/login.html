@@ -1,0 +1,76 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block inner_content %}
+{% for y in global_styles  %}
+<div class="{% if y.do_not_display %}
+do-not-display {% else %} overlay {% endif %}" style="background-color: {{ y.base_background_color }} !important;">
+</div>
+
+<body class="login-body">
+
+
+  <hr>
+  <h2 class="{% if y.do_not_display %}
+  do-not-display {% else %} logo-font mb-4 mt-5 {% endif %}" style="color: {{ y.base_font_color }} !important;">
+    {% trans "Sign In" %}
+  </h2>
+  {% endfor global_styles %}
+  <hr>
+
+
+  {% get_providers as socialaccount_providers %}
+
+  {% if socialaccount_providers %}
+  <p>{% blocktrans with site.name as site_name %}Please sign in with one
+    of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+    for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+
+  <div class="socialaccount_ballot">
+
+    <ul class="socialaccount_providers">
+      {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    </ul>
+
+    <div class="login-or">{% trans 'or' %}</div>
+
+  </div>
+
+  {% include "socialaccount/snippets/login_extra.html" %}
+
+  {% else %}
+
+  {% for y in global_styles  %}
+  <p class="{% if y.do_not_display %}
+  do-not-display {% else %} p-0 {% endif %}" style="color: {{ y.base_font_color }} !important;">{% blocktrans %}If you
+    have not created an account yet, then please
+    <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}
+  </p>
+  {% endfor global_styles %}
+  {% endif %}
+
+  <form class="login" method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <a class="btn basic-btn-style rounded-0" href="{% url 'home' %}">Home</a>
+    <button class="primaryAction signin-btn" type="submit">{% trans "Sign In" %}</button>
+    <p class="mt-2">
+      {% for y in global_styles  %}
+      <a class="{% if y.do_not_display %}
+      do-not-display {% else %} button secondaryAction {% endif %}" style="color: {{ y.base_font_color }} !important;"
+        href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}
+      </a>
+      {% endfor global_styles %}
+
+    </p>
+  </form>
+
+</body>
+{% endblock %}

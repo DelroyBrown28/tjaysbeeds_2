@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'profiles/css/profile.css' %}">
+
+{% endblock extra_css %}
+
+
+{% block page_header %}
+<div class="container header-container">
+    <div class="row">
+        <div class="col"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{% for y in global_styles  %}
+<div class="{% if y.do_not_display %}
+do-not-display {% else %} overlay {% endif %}" style="background-color: {{ y.base_background_color }} !important;">
+</div>
+{% endfor %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <hr>
+            {% for y in global_styles  %}
+            <h2 class="{% if y.do_not_display %}
+            do-not-display {% else %} logo-font mb-4 {% endif %}" style="color: {{ y.base_font_color }} !important;">My
+                Profile
+            </h2>
+            {% endfor %}
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            {% for y in global_styles  %}
+            <p class="{% if y.do_not_display %}
+        do-not-display {% else %} text-muted {% endif %}" style="color: {{ y.base_font_color }} !important;">
+                Default Delivery Information
+            </p>
+            {% endfor %}
+            <form class="mt-3" action="{% url 'profile' %}" method="POST" id="profile-update-form">
+                {% csrf_token %}
+                {{ form|crispy }}
+                {% for y in global_styles  %}
+                <button class="{% if y.do_not_display %}
+                do-not-display
+                {% else %}
+                btn btn-black rounded-0 text-uppercase float-right
+                {% endif %}" style="background-color: {{ y.secondary_button_base_color }};
+                        color: {{ y.secondary_button_text_color }}">Update Information
+                </button>
+                {% endfor %}
+            </form>
+        </div>
+        <div class="col-12 col-lg-6">
+            <p class="text-muted">Order History</p>
+            <div class="order-history table-responsive">
+                {% for y in global_styles  %}
+                <table class="{% if y.do_not_display %}
+                do-not-display {% else %} table table-sm table-borderless {% endif %}"
+                    style="color: {{ y.base_font_color }} !important;">
+                    <thead>
+                        <tr>
+                            <th>Order Number</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Order Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'order_history' order.order_number %}" title="{{ order.order_number }}">
+                                    {{ order.order_number|truncatechars:10 }}
+                                </a>
+                            </td>
+                            <td>{{ order.date }}</td>
+                            <td>
+                                <ul class="list-unstyled">
+                                    {% for item in order.lineitems.all %}
+                                    <li class="small">
+                                        {% if item.product.has_sizes %}
+                                        Size {{ item.product.size|upper }}
+                                        {% endif %}{{ item.product.name }} x{{ item.quantity }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>£{{ order.grand_total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block postloadjs %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'profiles/js/countryfield.js' %}"></script>
+
+{% endblock postloadjs %}

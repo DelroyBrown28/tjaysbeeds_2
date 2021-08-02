@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block page_header %}
+<div class="container header-container">
+    <div class="row">
+        <div class="col"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{% for y in global_styles  %}
+<div class="{% if y.do_not_display %}
+do-not-display {% else %} overlay {% endif %}" style="background-color: {{ y.base_background_color }} !important;">
+</div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="{% if y.do_not_display %}
+        do-not-display {% else %} col-12 col-md-6 {% endif %}" style="color: {{ y.base_font_color }} !important;">
+            <hr>
+            <h2 class="logo-font mb-4">
+                Product Management
+            </h2>
+            <h5 class="">Add a Product</h5>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="{% if y.do_not_display %}
+        do-not-display {% else %} col-12 col-md-6 {% endif %}" style="color: {{ y.base_font_color }} !important;">
+            <form method="POST" action="{% url 'add_product' %}" class="form mb-2" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                {% if field.name != 'image' %}
+                {{ field | as_crispy_field }}
+                {% else %}
+                {{ field }}
+                {% endif %}
+                {% endfor %}
+                <div class="text-right">
+                    <a class="{% if y.do_not_display %}
+                    do-not-display
+                    {% else %}
+                    btn btn-outline-black mr-2 rounded-0
+                    {% endif %}" style="background-color: {{ y.primary_button_base_color }} !important;
+                        color: {{ y.primary_button_text_color }} !important;" href="{% url 'products' %}">Cancel
+                    </a>
+                    <button class="{% if y.do_not_display %}
+                    do-not-display
+                    {% else %} btn btn-black rounded-0 {% endif %}" style="background-color: {{ y.secondary_button_base_color }} !important;
+                    color: {{ y.secondary_button_text_color }} !important;" type="submit">Add Product</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    {% endfor global_styles %}
+
+</div>
+
+{% endblock %}
+
+{% block postloadjs %}
+{{ block.super }}
+
+<script type="text/javascript">
+    $('#new-image').change(function () {
+        var file = $('#new-image')[0].files[0];
+        $('#filename').text(`Image will be set to: ${file.name}`);
+    })
+</script>
+
+{% endblock %}

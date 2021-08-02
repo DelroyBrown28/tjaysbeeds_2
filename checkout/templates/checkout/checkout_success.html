@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'checkout/css/checkout.css' %}">
+
+{% endblock extra_css %}
+
+
+{% block page_header %}
+<div class="container header-container">
+    <div class="row">
+        <div class="col"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{% for y in global_styles %}
+<div class="{% if y.do_not_display %}
+do-not-display {% else %} overlay {% endif %}" style="background-color: {{ y.base_background_color }} !important;">
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <hr>
+            <h2 class="{% if y.do_not_display %}
+            do-not-display {% else %} logo-font mb-4 {% endif %}" style="color: {{ y.base_font_color }} !important;">
+                Thanks!
+            </h2>
+            <hr>
+            <p class="{% if y.do_not_display %}
+            do-not-display {% else %} text-black {% endif %}" style="color: {{ y.base_font_color }} !important;">Your
+                order information is below. A confirmation email will be sent to <strong>{{ order.email }}</strong>.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-7">
+            <div class="{% if y.do_not_display %}
+            do-not-display {% else %} order-confirmation-wrapper p-2 border {% endif %}"
+                style="color: {{ y.base_font_color }} !important;">
+
+                <div class="row">
+                    <div class="col">
+                        <h6 class="{% if y.do_not_display %}
+                        do-not-display {% else %} text-muted {% endif %}"
+                            style="color: {{ y.base_font_color }} !important;">Order Information:
+                        </h6>
+                    </div>
+                </div><br>
+
+                <div class="{% if y.do_not_display %}
+                do-not-display {% else %} row {% endif %}" style="color: {{ y.base_font_color }} !important;">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">
+                            Order Number
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.order_number }}</p>
+                    </div>
+                </div>
+
+                <div class="{% if y.do_not_display %}
+                do-not-display {% else %} row {% endif %}" style="color: {{ y.base_font_color }} !important;">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">
+                            Order Date
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.date }}</p>
+                    </div>
+                </div>
+                <br>
+
+                <div class="row">
+                    <div class="col">
+                        <small class="{% if y.do_not_display %}
+                        do-not-display {% else %} text-muted {% endif %}"
+                            style="color: {{ y.base_font_color }} !important;">Order Details:</small>
+                    </div>
+                </div>
+                {% for item in order.lineitems.all %}
+                <div class="{% if y.do_not_display %}
+                do-not-display {% else %} row {% endif %}" style="color: {{ y.base_font_color }} !important;">
+                    <div class="col-12 col-md-4">
+                        <p class="small mb-0 font-weight-bold">
+                            {{ item.product.name }}{% if item.product_size %} - Size
+                            {{ item.product.size|upper }}{% endif %}
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="small mb-0">{{ item.quantity }}x -
+                            £{{ item.product.price }} each
+                        </p>
+                    </div>
+                </div><br>
+                {% endfor %}
+
+                <div class="row">
+                    <div class="col">
+                        <small class="{% if y.do_not_display %}
+                        do-not-display {% else %} text-muted {% endif %}"
+                            style="color: {{ y.base_font_color }} !important;">Delivering To:</small>
+                    </div>
+                </div>
+
+                <div class="{% if y.do_not_display %}
+                do-not-display {% else %} row {% endif %}" style="color: {{ y.base_font_color }} !important;">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Full Name</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.full_name }}</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Address 1</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.street_address1 }}</p>
+                    </div>
+                </div>
+
+                {% if order.street_address2 %}
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Address 2</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.street_address2 }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if order.county %}
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">County</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.county }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Town or City</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.town_or_city }}</p>
+                    </div>
+                </div>
+
+                {% if order.postcode %}
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Postal Code</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.postcode }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Country</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.country }}</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Phone Number</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">{{ order.phone_number }}</p>
+                    </div>
+                </div><br>
+
+                <div class="row">
+                    <div class="col">
+                        <small class="{% if y.do_not_display %}
+                        do-not-display {% else %} text-muted {% endif %}"
+                            style="color: {{ y.base_font_color }} !important;">Billing Info:</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Order Total</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">£{{ order.order_total }}</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Delivery</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">£{{ order.delivery_cost }}</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <p class="mb-0 font-weight-bold">Grand Total</p>
+                    </div>
+                    <div class="col-12 col-md-8 text-md-right">
+                        <p class="mb-0">£{{ order.grand_total }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-7 mt-2 text-left">
+
+            {% if from_profile %}
+            <a href="{% url 'profile' %}" class="{% if y.do_not_display %}
+            do-not-display {% else %} btn btn-black rounded-0 my-2 {% endif %}"
+                style="background-color: {{ y.secondary_button_base_color }} !important; color: {{ y.secondary_button_text_color }};">
+                <span class="icon">
+                    <i class="fas fa-angle-left"></i>
+                </span>
+                <span class="text-uppercase">Profile</span>
+            </a>
+            {% else %}
+            <a href="{% url 'products' %}?category=new_arrivals,deals,clearance" class="{% if y.do_not_display %}
+            do-not-display {% else %} btn btn-black rounded-0 my-2 {% endif %}"
+                style="background-color: {{ y.secondary_button_base_color }} !important; color: {{ y.secondary_button_text_color }};">
+                <span class="icon mr-2">
+                    <i class="fas fa-gifts"></i>
+                </span>
+                <span class="text-uppercase">Now check out the latest deals!</span>
+            </a>
+            {% endif %}
+
+        </div>
+    </div>
+    {% endfor global_styles %}
+
+</div>
+
+<script src="{% static 'checkout/javascript/stripe_elements.js' %}"></script>
+
+
+{% endblock %}

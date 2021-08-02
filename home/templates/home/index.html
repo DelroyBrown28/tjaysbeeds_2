@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+
+{% block page_header %}
+{{ form.media }}
+<div class="container header-container">
+    <div class="row">
+        <div class="col">
+            {% include 'includes/header.html' %}
+
+        </div>
+    </div>
+</div>
+{% endblock page_header %}
+
+{% block content %}
+<body class="home-body">
+
+    {% for x in home_page_customisation %}
+    <div class="{% if x.do_not_display %}
+    do-not-display {% else %} homepage-bg-image h-100 w-100 img-fluid {% endif %}"
+        style="background: url({{x.image.url}});"></div>
+    {% endfor %}
+
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md-12 my-auto">
+
+                {% for x in home_page_customisation  %}
+                <h1 class="{% if x.do_not_display %}
+                do-not-display {% else %} display-4 logo-font main-page-text {{ x.main_page_text_alignment }} {% endif %}"
+                    style="color: {{ x.main_page_text_color }};">
+                    {{ x.main_page_text|safe }}</h1>
+                {% endfor %}
+
+                {% for x in home_page_customisation  %}
+                <div class="{% if x.do_not_display %}
+                do-not-display {% else %} my-5 {{ x.main_page_button_alignment }} {% endif %}">
+                    <h4>
+                        {% for x in home_page_customisation  %}
+                        <a href="{% url 'products' %}" class="{% if x.do_not_display %}
+                        do-not-display {% else %} shop-now-button btn btn-lg rounded-0 text-uppercase py-3 {% endif %}"
+                            style="background-color: {{ x.button_background_color }};">
+
+                            <p class="{% if x.do_not_display %}
+                            do-not-display {% endif %}" style="color: {{ x.button_text_color }}; margin: 0 !important">
+                                {{ x.button_text }}
+                            </p>
+                        </a>
+                        {% endfor %}
+                    </h4>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</body>
+
+
+{% endblock content %}

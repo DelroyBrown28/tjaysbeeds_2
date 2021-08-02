@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+
+{% block branding %}
+<!-- <h1 id="site-name"><a href="{% url 'admin:index' %}">NueUi</a></h1> -->
+<img class="" style="height: 77px;" src="{% static 'images/nueuiwhite.png' %}" alt="" />
+<br>
+<br>
+{% if request.user.is_superuser %}
+{% if request.get_full_path == '/superadmin/' %}
+<hr>
+<small class="business-tag">{{request.user}}</small><br>
+<a href="/admin" style="color: #48AA8B;">Admin</a>
+<hr>
+<!-- <img src="{% static 'images/superadminicon.png' %}" style="height: 16px !important;"> -->
+{% else %}
+<hr>
+<small class="business-tag">{{request.user}}</small><br>
+<a href="/superadmin" style="color: #48AA8B;">Superuser Admin</a>
+<hr>
+{% endif %}
+{% endif %}
+
+
+{% endblock %}

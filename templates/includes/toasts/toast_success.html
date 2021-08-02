@@ -1,0 +1,92 @@
+<div class="toast custom-toast rounded-0 border-top-0" data-autohide="false">
+    <div class="arrow-up arrow-success"></div>
+    <div class="w-100 toast-capper bg-success"></div>
+
+    {% for y in global_styles  %}
+    <div class="{% if y.do_not_display %}
+    do-not-display {% else %} toast-header {% endif %}"
+        style="background-color: {{ y.pop_up_background_color }}!important;">
+        <strong class="{% if y.do_not_display %}
+        do-not-display {% else %} mr-auto {% endif %}"
+            style="color: {{ y.pop_up_text_color }}!important;">Success!</strong>
+        <button type="button" class="ml-2 mb-1 close text-dark" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+    {% for y in global_styles  %}
+    <div class="{% if y.do_not_display %}
+    do-not-display {% else %} toast-body bg-white {% endif %}"
+        style="background-color: {{ y.pop_up_background_color }}!important;">
+        <div class="{% if y.do_not_display %}
+        do-not-display {% else %} row {% endif %}" style="color: {{ y.pop_up_text_color }}!important;">
+            <div class="col">
+                {{ message }}
+                <hr class="mt-1 mb-3">
+            </div>
+        </div>
+        {% if grand_total and not on_profile_page %}
+        <p class="{% if y.do_not_display %}
+        do-not-display {% else %} logo-font py-1 {% endif %}" style="color: {{ y.pop_up_text_color }}!important;">
+            Your Bag ({{ product_count }})
+        </p>
+        <div class="bag-notification-wrapper">
+            {% for item in bag_items %}
+            <div class="row">
+                <div class="col-3 my-1">
+                    {% if item.product.image %}
+                    <img class="w-100" src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                    {% else %}
+                    <img class="w-100" src="{{ MEDIA_URL }}noimage.png" alt="{{ item.product.name }}">
+                    {% endif %}
+                </div>
+                <div class="col-9">
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} my-0 {% endif %}" style="color: {{ y.pop_up_text_color }}!important;">
+                        <strong>{{ item.product.name }}</strong></p>
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} my-0 small {% endif %}"
+                        style="color: {{ y.pop_up_text_color }}!important;">Size:
+                        {% if item.product.has_sizes %}{{ item.size|upper }}{% else %}N/A{% endif %}</p>
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} my-0 small text-muted {% endif %}"
+                        style="color: {{ y.pop_up_text_color }}!important;">Qty: {{ item.quantity }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="col">
+                <strong>
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} mt-3 mb-1 {% endif %}"
+                        style="color: {{ y.pop_up_text_color }}!important;">
+                        Total{% if free_delivery_delta > 0 %} (Exc. delivery){% endif %}:
+                        <span class="float-right">£{{ total|floatformat:2 }}</span>
+                    </p>
+                </strong>
+                {% if free_delivery_delta > 0 %}
+                <p class="mb-0 p-2 bg-warning shadow-sm text-black text-center">
+                    Spend <strong>£{{ free_delivery_delta }}</strong> more to get free next day delivery!
+                </p>
+                {% endif %}
+                <a href="{% url 'view_bag' %}" class="{% if y.do_not_display %}
+                do-not-display {% else %} btn btn-black btn-block rounded-0 {% endif %}"
+                    style="background-color: {{ y.secondary_button_base_color }}!important;">
+                    <span class="{% if y.do_not_display %}
+                    do-not-display {% else %} text-uppercase {% endif %}"
+                        style="color: {{ y.secondary_button_text_color }}!important;">Go To Secure
+                        Checkout</span>
+                    <span class="icon">
+                        <i class="{% if y.do_not_display %}
+                        do-not-display {% else %} fas fa-lock {% endif %}"
+                            style="color: {{ y.all_icon_colors }}!important;"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+</div>

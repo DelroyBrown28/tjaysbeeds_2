@@ -1,0 +1,720 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bag_tools %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'checkout/css/checkout.css' %}">
+
+{% endblock extra_css %}
+
+
+{% block page_header %}
+<div class="container header-container">
+    <div class="row">
+        <div class="col"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{% for y in global_styles %}
+<div class="{% if y.do_not_display %}
+do-not-display {% else %} overlay {% endif %}" style="background-color: {{ y.base_background_color }} !important;">
+</div>
+{% endfor global_styles %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col">
+            <hr>
+            {% for y in global_styles %}
+            <h2 class="{% if y.do_not_display %}
+            do-not-display {% else %} logo-font mb-4 {% endif %}" style="color: {{ y.base_font_color }} !important;">
+                Checkout
+            </h2>
+            {% endfor global_styles %}
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-6 order-lg-last mb-5">
+            {% for y in global_styles  %}
+            <p class="{% if y.do_not_display %}
+            do-not-display {% else %} text-muted {% endif %}" style="color: {{ y.base_font_color }} !important;">Order
+                Summary ({{ product_count }})
+            </p>
+            <div class="row">
+                <div class="col-7 offset-2">
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} mb-1 mt-0 small text-muted {% endif %}"
+                        style="color: {{ y.base_font_color }} !important;">Item</p>
+                </div>
+                <div class="col-3 text-right">
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} mb-1 mt-0 small text-muted {% endif %}"
+                        style="color: {{ y.base_font_color }} !important;">Subtotal
+                    </p>
+                </div>
+            </div>
+            {% endfor global_styles %}
+
+            {% for item in bag_items %}
+            <div class="row">
+                <div class="col-2 mb-1">
+                    <a href="{% url 'product_detail' item.product.id %}">
+                        {% if item.product.image %}
+                        <img class="w-100" src="{{ item.product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                        <img class="w-100" src="{{ MEDIA_URL }}noimage.png" alt="{{ product.name }}">
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="col-7">
+
+                    {% for y in global_styles  %}
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} my-0 {% endif %}" style="color: {{ y.base_font_color }} !important;">
+                        <strong>{{ item.product.name }}</strong>
+                    </p>
+
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} my-0 small {% endif %}"
+                        style="color: {{ y.base_font_color }} !important;">Size:
+                        {% if item.product.has_sizes %}{{ item.size|upper }}{% else %}N/A{% endif %}</p>
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} my-0 small text-muted {% endif %}"
+                        style="color: {{ y.base_font_color }} !important;">Qty: {{ item.quantity }}</p>
+                </div>
+                <div class="col-3 text-right">
+                    <p class="{% if y.do_not_display %}
+                    do-not-display {% else %} my-0 small text-muted {% endif %}"
+                        style="color: {{ y.base_font_color }} !important;">
+                        £{{ item.product.price | calc_subtotal:item.quantity }}
+                    </p>
+                    {% endfor global_styles %}
+                </div>
+            </div>
+            {% endfor %}
+            <hr class="my-0">
+            <!-- Summary section -->
+            {% for y in global_styles  %}
+            <div class="{% if y.do_not_display %}
+            do-not-display {% else %} row text-black text-right {% endif %}"
+                style="color: {{ y.base_font_color }} !important;">
+                <div class="col-7 offset-2">
+                    <p class="my-0">Order Total:</p>
+                    <p class="my-0">Delivery:</p>
+                    <p class="my-0">Grand Total:</p>
+                </div>
+                <div class="col-3">
+                    <p class="my-0">£{{ total | floatformat:2 }}</p>
+                    <p class="my-0">£{{ delivery | floatformat:2 }}</p>
+                    <p class="my-0"><strong>£{{ grand_total | floatformat:2 }}</strong></p>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="col-12 col-lg-6">
+
+            {% for y in global_styles  %}
+            <p class="{% if y.do_not_display %}
+            do-not-display {% else %} text-muted {% endif %}" style="color: {{ y.base_font_color }} !important;">Please
+                fill out the form below to complete your order
+            </p>
+            {% endfor %}
+
+            <form action="{% url 'checkout' %}" method="POST" id="payment-form">
+                {% csrf_token %}
+                <fieldset class="rounded mb-5">
+                    {% for y in global_styles  %}
+                    <legend class="{% if y.do_not_display %}
+                    do-not-display {% else %} fieldset-label small text-black px-2 w-auto {% endif %}"
+                        style="color: {{ y.base_font_color }} !important;">Details
+                    </legend>
+                    {% endfor global_styles %}
+                    {{ order_form.full_name | as_crispy_field }}
+                    {{ order_form.email | as_crispy_field }}
+                </fieldset>
+                <fieldset class="rounded mb-5">
+                    {% for y in global_styles  %}
+                    <legend class="{% if y.do_not_display %}
+                    do-not-display {% else %} fieldset-label small text-black px-2 w-auto {% endif %}"
+                        style="color: {{ y.base_font_color }} !important;">Delivery
+                    </legend>
+                    {% endfor global_styles %}
+
+                    {{ order_form.phone_number | as_crispy_field }}
+                    <div id="div_id_country" class="form-group">
+                        {% for y in global_styles  %}
+                        <label for="id_country" class="{% if y.do_not_display %}
+                        do-not-display {% else %} requiredField {% endif %}"
+                            style="color: {{ y.base_font_color }} !important;">
+                            Country<span class="asteriskField">*</span>
+                        </label>
+                        {% endfor global_styles %}
+                        <div class="">
+                            <select name="country" class="lazyselect form-control" required="" id="id_country">
+                                <option value="">Country *</option>
+
+                                <option value="AF">Afghanistan</option>
+
+                                <option value="AX">Åland Islands</option>
+
+                                <option value="AL">Albania</option>
+
+                                <option value="DZ">Algeria</option>
+
+                                <option value="AS">American Samoa</option>
+
+                                <option value="AD">Andorra</option>
+
+                                <option value="AO">Angola</option>
+
+                                <option value="AI">Anguilla</option>
+
+                                <option value="AQ">Antarctica</option>
+
+                                <option value="AG">Antigua and Barbuda</option>
+
+                                <option value="AR">Argentina</option>
+
+                                <option value="AM">Armenia</option>
+
+                                <option value="AW">Aruba</option>
+
+                                <option value="AU">Australia</option>
+
+                                <option value="AT">Austria</option>
+
+                                <option value="AZ">Azerbaijan</option>
+
+                                <option value="BS">Bahamas</option>
+
+                                <option value="BH">Bahrain</option>
+
+                                <option value="BD">Bangladesh</option>
+
+                                <option value="BB">Barbados</option>
+
+                                <option value="BY">Belarus</option>
+
+                                <option value="BE">Belgium</option>
+
+                                <option value="BZ">Belize</option>
+
+                                <option value="BJ">Benin</option>
+
+                                <option value="BM">Bermuda</option>
+
+                                <option value="BT">Bhutan</option>
+
+                                <option value="BO">Bolivia</option>
+
+                                <option value="BQ">Bonaire, Sint Eustatius and Saba</option>
+
+                                <option value="BA">Bosnia and Herzegovina</option>
+
+                                <option value="BW">Botswana</option>
+
+                                <option value="BV">Bouvet Island</option>
+
+                                <option value="BR">Brazil</option>
+
+                                <option value="IO">British Indian Ocean Territory</option>
+
+                                <option value="BN">Brunei</option>
+
+                                <option value="BG">Bulgaria</option>
+
+                                <option value="BF">Burkina Faso</option>
+
+                                <option value="BI">Burundi</option>
+
+                                <option value="CV">Cabo Verde</option>
+
+                                <option value="KH">Cambodia</option>
+
+                                <option value="CM">Cameroon</option>
+
+                                <option value="CA">Canada</option>
+
+                                <option value="KY">Cayman Islands</option>
+
+                                <option value="CF">Central African Republic</option>
+
+                                <option value="TD">Chad</option>
+
+                                <option value="CL">Chile</option>
+
+                                <option value="CN">China</option>
+
+                                <option value="CX">Christmas Island</option>
+
+                                <option value="CC">Cocos (Keeling) Islands</option>
+
+                                <option value="CO">Colombia</option>
+
+                                <option value="KM">Comoros</option>
+
+                                <option value="CG">Congo</option>
+
+                                <option value="CD">Congo (the Democratic Republic of the)</option>
+
+                                <option value="CK">Cook Islands</option>
+
+                                <option value="CR">Costa Rica</option>
+
+                                <option value="CI">Côte d'Ivoire</option>
+
+                                <option value="HR">Croatia</option>
+
+                                <option value="CU">Cuba</option>
+
+                                <option value="CW">Curaçao</option>
+
+                                <option value="CY">Cyprus</option>
+
+                                <option value="CZ">Czechia</option>
+
+                                <option value="DK">Denmark</option>
+
+                                <option value="DJ">Djibouti</option>
+
+                                <option value="DM">Dominica</option>
+
+                                <option value="DO">Dominican Republic</option>
+
+                                <option value="EC">Ecuador</option>
+
+                                <option value="EG">Egypt</option>
+
+                                <option value="SV">El Salvador</option>
+
+                                <option value="GQ">Equatorial Guinea</option>
+
+                                <option value="ER">Eritrea</option>
+
+                                <option value="EE">Estonia</option>
+
+                                <option value="SZ">Eswatini</option>
+
+                                <option value="ET">Ethiopia</option>
+
+                                <option value="FK">Falkland Islands (Malvinas)</option>
+
+                                <option value="FO">Faroe Islands</option>
+
+                                <option value="FJ">Fiji</option>
+
+                                <option value="FI">Finland</option>
+
+                                <option value="FR">France</option>
+
+                                <option value="GF">French Guiana</option>
+
+                                <option value="PF">French Polynesia</option>
+
+                                <option value="TF">French Southern Territories</option>
+
+                                <option value="GA">Gabon</option>
+
+                                <option value="GM">Gambia</option>
+
+                                <option value="GE">Georgia</option>
+
+                                <option value="DE">Germany</option>
+
+                                <option value="GH">Ghana</option>
+
+                                <option value="GI">Gibraltar</option>
+
+                                <option value="GR">Greece</option>
+
+                                <option value="GL">Greenland</option>
+
+                                <option value="GD">Grenada</option>
+
+                                <option value="GP">Guadeloupe</option>
+
+                                <option value="GU">Guam</option>
+
+                                <option value="GT">Guatemala</option>
+
+                                <option value="GG">Guernsey</option>
+
+                                <option value="GN">Guinea</option>
+
+                                <option value="GW">Guinea-Bissau</option>
+
+                                <option value="GY">Guyana</option>
+
+                                <option value="HT">Haiti</option>
+
+                                <option value="HM">Heard Island and McDonald Islands</option>
+
+                                <option value="VA">Holy See</option>
+
+                                <option value="HN">Honduras</option>
+
+                                <option value="HK">Hong Kong</option>
+
+                                <option value="HU">Hungary</option>
+
+                                <option value="IS">Iceland</option>
+
+                                <option value="IN">India</option>
+
+                                <option value="ID">Indonesia</option>
+
+                                <option value="IR">Iran</option>
+
+                                <option value="IQ">Iraq</option>
+
+                                <option value="IE">Ireland</option>
+
+                                <option value="IM">Isle of Man</option>
+
+                                <option value="IL">Israel</option>
+
+                                <option value="IT">Italy</option>
+
+                                <option value="JM">Jamaica</option>
+
+                                <option value="JP">Japan</option>
+
+                                <option value="JE">Jersey</option>
+
+                                <option value="JO">Jordan</option>
+
+                                <option value="KZ">Kazakhstan</option>
+
+                                <option value="KE">Kenya</option>
+
+                                <option value="KI">Kiribati</option>
+
+                                <option value="KW">Kuwait</option>
+
+                                <option value="KG">Kyrgyzstan</option>
+
+                                <option value="LA">Laos</option>
+
+                                <option value="LV">Latvia</option>
+
+                                <option value="LB">Lebanon</option>
+
+                                <option value="LS">Lesotho</option>
+
+                                <option value="LR">Liberia</option>
+
+                                <option value="LY">Libya</option>
+
+                                <option value="LI">Liechtenstein</option>
+
+                                <option value="LT">Lithuania</option>
+
+                                <option value="LU">Luxembourg</option>
+
+                                <option value="MO">Macao</option>
+
+                                <option value="MG">Madagascar</option>
+
+                                <option value="MW">Malawi</option>
+
+                                <option value="MY">Malaysia</option>
+
+                                <option value="MV">Maldives</option>
+
+                                <option value="ML">Mali</option>
+
+                                <option value="MT">Malta</option>
+
+                                <option value="MH">Marshall Islands</option>
+
+                                <option value="MQ">Martinique</option>
+
+                                <option value="MR">Mauritania</option>
+
+                                <option value="MU">Mauritius</option>
+
+                                <option value="YT">Mayotte</option>
+
+                                <option value="MX">Mexico</option>
+
+                                <option value="FM">Micronesia (Federated States of)</option>
+
+                                <option value="MD">Moldova</option>
+
+                                <option value="MC">Monaco</option>
+
+                                <option value="MN">Mongolia</option>
+
+                                <option value="ME">Montenegro</option>
+
+                                <option value="MS">Montserrat</option>
+
+                                <option value="MA">Morocco</option>
+
+                                <option value="MZ">Mozambique</option>
+
+                                <option value="MM">Myanmar</option>
+
+                                <option value="NA">Namibia</option>
+
+                                <option value="NR">Nauru</option>
+
+                                <option value="NP">Nepal</option>
+
+                                <option value="NL">Netherlands</option>
+
+                                <option value="NC">New Caledonia</option>
+
+                                <option value="NZ">New Zealand</option>
+
+                                <option value="NI">Nicaragua</option>
+
+                                <option value="NE">Niger</option>
+
+                                <option value="NG">Nigeria</option>
+
+                                <option value="NU">Niue</option>
+
+                                <option value="NF">Norfolk Island</option>
+
+                                <option value="KP">North Korea</option>
+
+                                <option value="MK">North Macedonia</option>
+
+                                <option value="MP">Northern Mariana Islands</option>
+
+                                <option value="NO">Norway</option>
+
+                                <option value="OM">Oman</option>
+
+                                <option value="PK">Pakistan</option>
+
+                                <option value="PW">Palau</option>
+
+                                <option value="PS">Palestine, State of</option>
+
+                                <option value="PA">Panama</option>
+
+                                <option value="PG">Papua New Guinea</option>
+
+                                <option value="PY">Paraguay</option>
+
+                                <option value="PE">Peru</option>
+
+                                <option value="PH">Philippines</option>
+
+                                <option value="PN">Pitcairn</option>
+
+                                <option value="PL">Poland</option>
+
+                                <option value="PT">Portugal</option>
+
+                                <option value="PR">Puerto Rico</option>
+
+                                <option value="QA">Qatar</option>
+
+                                <option value="RE">Réunion</option>
+
+                                <option value="RO">Romania</option>
+
+                                <option value="RU">Russia</option>
+
+                                <option value="RW">Rwanda</option>
+
+                                <option value="BL">Saint Barthélemy</option>
+
+                                <option value="SH">Saint Helena, Ascension and Tristan da Cunha</option>
+
+                                <option value="KN">Saint Kitts and Nevis</option>
+
+                                <option value="LC">Saint Lucia</option>
+
+                                <option value="MF">Saint Martin (French part)</option>
+
+                                <option value="PM">Saint Pierre and Miquelon</option>
+
+                                <option value="VC">Saint Vincent and the Grenadines</option>
+
+                                <option value="WS">Samoa</option>
+
+                                <option value="SM">San Marino</option>
+
+                                <option value="ST">Sao Tome and Principe</option>
+
+                                <option value="SA">Saudi Arabia</option>
+
+                                <option value="SN">Senegal</option>
+
+                                <option value="RS">Serbia</option>
+
+                                <option value="SC">Seychelles</option>
+
+                                <option value="SL">Sierra Leone</option>
+
+                                <option value="SG">Singapore</option>
+                                <option value="SX">Sint Maarten (Dutch part)</option>
+                                <option value="SK">Slovakia</option>
+                                <option value="SI">Slovenia</option>
+                                <option value="SB">Solomon Islands</option>
+                                <option value="SO">Somalia</option>
+                                <option value="ZA">South Africa</option>
+                                <option value="GS">South Georgia and the South Sandwich Islands</option>
+                                <option value="KR">South Korea</option>
+                                <option value="SS">South Sudan</option>
+                                <option value="ES">Spain</option>
+                                <option value="LK">Sri Lanka</option>
+                                <option value="SD">Sudan</option>
+                                <option value="SR">Suriname</option>
+                                <option value="SJ">Svalbard and Jan Mayen</option>
+                                <option value="SE">Sweden</option>
+                                <option value="CH">Switzerland</option>
+                                <option value="SY">Syria</option>
+                                <option value="TW">Taiwan</option>
+                                <option value="TJ">Tajikistan</option>
+                                <option value="TZ">Tanzania</option>
+                                <option value="TH">Thailand</option>
+                                <option value="TL">Timor-Leste</option>
+                                <option value="TG">Togo</option>
+                                <option value="TK">Tokelau</option>
+                                <option value="TO">Tonga</option>
+                                <option value="TT">Trinidad and Tobago</option>
+                                <option value="TN">Tunisia</option>
+                                <option value="TR">Turkey</option>
+                                <option value="TM">Turkmenistan</option>
+                                <option value="TC">Turks and Caicos Islands</option>
+                                <option value="TV">Tuvalu</option>
+                                <option value="UG">Uganda</option>
+                                <option value="UA">Ukraine</option>
+                                <option value="AE">United Arab Emirates</option>
+                                <option value="GB" selected="">United Kingdom</option>
+                                <option value="UM">United States Minor Outlying Islands</option>
+                                <option value="US">United States of America</option>
+                                <option value="UY">Uruguay</option>
+                                <option value="UZ">Uzbekistan</option>
+                                <option value="VU">Vanuatu</option>
+                                <option value="VE">Venezuela</option>
+                                <option value="VN">Vietnam</option>
+                                <option value="VG">Virgin Islands (British)</option>
+                                <option value="VI">Virgin Islands (U.S.)</option>
+                                <option value="WF">Wallis and Futuna</option>
+                                <option value="EH">Western Sahara</option>
+                                <option value="YE">Yemen</option>
+                                <option value="ZM">Zambia</option>
+                                <option value="ZW">Zimbabwe</option>
+                            </select>
+                        </div>
+                    </div>
+                    {{ order_form.postcode | as_crispy_field }}
+                    {{ order_form.town_or_city | as_crispy_field }}
+                    {{ order_form.street_address1 | as_crispy_field }}
+                    {{ order_form.street_address2 | as_crispy_field }}
+                    {{ order_form.county | as_crispy_field }}
+                    <div class="form-check form-check-inline float-right mr-0">
+                        {% if user.is_authenticated %}
+                        {% for y in global_styles  %}
+                        <label class="{% if y.do_not_display %}
+                        do-not-display {% else %} form-check-label {% endif %}" for="id-save-info"
+                            style="color: {{ y.base_font_color }} !important;">Save this delivery
+                            information to my
+                            profile
+                        </label>
+                        {% endfor global_styles %}
+                        <input class="form-check-input ml-2 mr-0" type="checkbox" id="id-save-info" name="save-info"
+                            checked>
+                        {% else %}
+                        <label class="form-check-label" for="id-save-info">
+                            <a class="text-info" href="{% url 'account_signup' %}">Create an account</a> or
+                            <a class="text-info" href="{% url 'account_login' %}">login</a> to save this information
+                        </label>
+                        {% endif %}
+                    </div>
+                </fieldset>
+                <fieldset class="">
+                    {% for y in global_styles  %}
+
+                    <legend class="{% if y.do_not_display %}
+                    do-not-display {% else %} fieldset-label small text-black px-2 w-auto {% endif %}"
+                        style="color: {{ y.base_font_color }} !important;">
+                        Payment
+                    </legend>
+                    {% endfor %}
+                    <!-- Stripe card element will go here -->
+                    <div class="mb-3" id="card-element"></div>
+
+                    <!-- Used to display form errors -->
+                    <div class="mb-3 text-danger" id="card-errors" role="alert"></div>
+                    <!-- Pass the client secret to the view so we can get the payment intent ID -->
+                    <input type="hidden" value="{{ client_secret }}" name="client_secret">
+
+                </fieldset>
+
+                <div class="submit-button text-right mt-5 mb-2">
+                    <!-- Link back to shopping bag -->
+                    {% for y in global_styles  %}
+                    <a href="{% url 'view_bag' %}" class="{% if y.do_not_display %}
+                    do-not-display {% else %} btn btn-outline-black rounded-0 {% endif %}"
+                        style="background-color: {{ y.primary_button_base_color }}; !important">
+                        <span class="icon">
+                            <i class="{% if y.do_not_display %}
+                            do-not-display {% else %} fas fa-chevron-left {% endif %}"
+                                style="color: {{ y.primary_button_text_color }};"></i>
+                        </span>
+                        <span class="{% if y.do_not_display %}
+                        do-not-display {% else %} font-weight-bold {% endif %}"
+                            style="color: {{ y.primary_button_text_color }};">
+                            Adjust Bag
+                        </span>
+                    </a>
+                    {% endfor global_styles %}
+
+                    <!-- Submit button -->
+                    {% for y in global_styles  %}
+                    <button id="submit-button" class="{% if y.do_not_display %}
+                    do-not-display {% else %} btn btn-black rounded-0 {% endif %}"
+                        style="background-color: {{ y.secondary_button_base_color }}; !important">
+                        <span class="{% if y.do_not_display %}
+                        do-not-display {% else %} font-weight-bold {% endif %}"
+                            style="color: {{ y.secondary_button_text_color }}; !important">Complete
+                            Order
+                        </span>
+                        <span class="icon">
+                            <i class="{% if y.do_not_display %}
+                            do-not-display {% else %} fas fa-lock {% endif %}"
+                                style="color: {{ y.secondary_button_text_color }}; !important">
+                            </i>
+                        </span>
+                    </button>
+                    {% endfor global_styles %}
+                    <!-- How much card will be charged -->
+                    <p class="small text-danger my-0">
+                        <span class="icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </span>
+                        <span>Your card will be charged <strong>£{{ grand_total|floatformat:2 }}</strong></span>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="loading-overlay">
+    <h1 class="text-light logo-font loading-spinner">
+        <span class="icon">
+            <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+        </span>
+    </h1>
+</div>
+{% endblock %}
+
+
+{% block postloadjs %}
+{{ block.super }}
+{{ stripe_public_key|json_script:"id_stripe_public_key" }}
+{{ client_secret|json_script:"id_client_secret" }}
+<script src="{% static 'checkout/javascript/stripe_elements.js' %}"></script>
+{% endblock %}
