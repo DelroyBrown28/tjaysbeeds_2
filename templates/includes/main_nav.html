@@ -2,86 +2,37 @@
 
 <div class="collapse navbar-collapse" id="main-nav">
 
-    <ul class="navbar-nav w-auto max-auto">
 
-        {% for x in header_customisation  %}
-        {% for y in global_styles  %}
+
+    {% for x in header_customisation  %}
+    {% for y in global_styles  %}
+    <a class="{% if y.do_not_display or x.do_not_display %}
+    do-not-display {% else %} logo-font font-weight-bold nav-link text-black {% endif %}"
+        style="color: {{ y.base_font_color }} !important;" href="/">
+        <i class="{% if y.do_not_display %}
+        do-not-display {% else %} fas fa-home mr-2 {% endif %}" style="color: {{ y.all_icon_colors }};"></i>
+        Home
+
+
+        <a href="{% url 'products' %}" class="{% if y.do_not_display or x.do_not_display %}
+        do-not-display {% else %} logo-font font-weight-bold nav-link text-black {% endif %}"
+            style="color: {{ y.base_font_color }} !important;">
+            All Products
+        </a>
         <a class="{% if y.do_not_display or x.do_not_display %}
         do-not-display {% else %} logo-font font-weight-bold nav-link text-black {% endif %}"
-            style="color: {{ y.base_font_color }} !important;" href="/">
-            <i class="{% if y.do_not_display %}
-            do-not-display {% else %} fas fa-home mr-2 {% endif %}" style="color: {{ y.all_icon_colors }};"></i>
-            Home
+            href="{% url 'products' %}?category=gemstones" style="color: {{ y.base_font_color }} !important;">
+            Gemstones
         </a>
+        <a class="{% if y.do_not_display or x.do_not_display %}
+        do-not-display {% else %} logo-font font-weight-bold nav-link text-black {% endif %}"
+            href="{% url 'products' %}?category=tools" style="color: {{ y.base_font_color }} !important;">
+            Tools
+        </a>
+    </a>
+    {% endfor %}
+    {% endfor %}
 
-        <li class="nav-item dropdown">
-            <a class="{% if y.do_not_display or x.do_not_display %}
-            do-not-display {% else %} logo-font font-weight-bold nav-link text-black {% endif %}"
-                style="color: {{ y.base_font_color }} !important;" href="{% url 'products' %}" id="all-products-link"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                All Products
-            </a>
-            <div class="dropdown-menu border-0" aria-labelledby="all-products-link">
-                <a href="{% url 'products' %}?sort=price&direction=asc" class="dropdown-item">By Price</a>
-                <a href="{% url 'products' %}?sort=rating&direction=desc" class=" dropdown-item ">By Rating</a>
-                <a href="{% url 'products' %}?sort=category&direction=asc" class="dropdown-item ">By Category</a>
-                <a href="{% url 'products' %}" class="dropdown-item">All Products</a>
-            </div>
-        </li>
-
-        <li class="nav-item dropdown">
-            <a class="{% if y.do_not_display or x.do_not_display %}
-            do-not-display {% else %} logo-font font-weight-bold nav-link text-black {% endif %}" href="#"
-                id="clothing-link" style="color: {{ y.base_font_color }} !important;" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Clothing
-            </a>
-            <div class="dropdown-menu border-0" aria-labelledby="clothing-link">
-                <a href="{% url 'products' %}?category=activewear,essentials" class="dropdown-item">Activewear &amp;
-                    Essentials</a>
-                <a href="{% url 'products' %}?category=jackets" class="dropdown-item">Jackets</a>
-                <a href="{% url 'products' %}?category=jeans" class="dropdown-item">Jeans</a>
-                <a href="{% url 'products' %}?category=shirts" class="dropdown-item">Shirts</a>
-                <a href="{% url 'products' %}?category=activewear,essentials,jackets,jeans,shirts"
-                    class="dropdown-item">All
-                    Clothing</a>
-            </div>
-        </li>
-
-        <li class="nav-item dropdown">
-            <a class="{% if y.do_not_display or x.do_not_display %}
-            do-not-display {% else %} logo-font font-weight-bold nav-link text-black {% endif %}"
-                style="color: {{ y.base_font_color }} !important;" href="#" id="homeware-link" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Homeware
-            </a>
-            <div class="dropdown-menu border-0" aria-labelledby="homeware-link">
-                <a href="{% url 'products' %}?category=bed_bath" class="dropdown-item">Bed &amp; Bath</a>
-                <a href="{% url 'products' %}?category=kitchen_dining" class="dropdown-item">Kitchen &amp; Dining</a>
-                <a href="{% url 'products' %}?category=bed_bath,kitchen_dining" class="dropdown-item">All Homeware</a>
-            </div>
-        </li>
-
-        <li class="nav-item dropdown">
-            <a class="{% if y.do_not_display or x.do_not_display %}
-            do-not-display {% else %} logo-font font-weight-bold nav-link text-black {% endif %}"
-                style="color: {{ y.base_font_color }} !important;" href="#" id="specials-link" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Special Offers
-            </a>
-            {% endfor %}
-            {% endfor %}
-
-            <div class="dropdown-menu border-0" aria-labelledby="specials-link">
-                <a href="{% url 'products' %}?category=new_arrivals" class="dropdown-item">New Arrivals</a>
-                <a href="{% url 'products' %}?category=deals" class="dropdown-item">Deals</a>
-                <a href="{% url 'products' %}?category=clearance" class="dropdown-item">Clearance</a>
-                <a href="{% url 'products' %}?category=new_arrivals,deals,clearance" class="dropdown-item">All
-                    Specials</a>
-            </div>
-        </li>
-
-    </ul>
 </div>
 
 
