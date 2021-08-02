@@ -21,7 +21,7 @@ do-not-display {% else %} overlay {% endif %}" style="background-color: {{ y.bas
 
 {% for x in products_page_customisation  %}
 {% for y in global_styles  %}
-<div class="{% if y.do_not_display %}
+<div class="{% if y.do_not_display or x.do_not_display %}
 do-not-display {% else %} container-fluid {% endif %}">
     <div class="row">
         <div class="col text-center mt-3">
